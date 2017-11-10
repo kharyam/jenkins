@@ -1,0 +1,43 @@
+FROM registry.access.redhat.com/openshift3/jenkins-slave-base-rhel7
+
+MAINTAINER Khary Mendez <khary@redhat.com>
+
+# Labels consumed by Red Hat build service
+LABEL com.redhat.component="jenkins-slave-scap-rhel7-docker" \
+      name="openshift3/jenkins-slave-scap-rhel7" \
+      version="3.6" \
+      architecture="x86_64" \
+      release="1" \
+      io.k8s.display-name="Jenkins Slave SCAP" \
+      io.k8s.description="The jenkins slave SCAP image has the OpenSCAP tools (image-inspector) on top of the jenkins slave base image." \
+      io.openshift.tags="openshift,jenkins,slave,scap"
+
+# Install OpenSCAP Utils
+RUN yum repolist && \
+    yum clean metadata && \
+    yum-config-manager --enable rhel-7-server-extras-rpms rhel-7-server-optional-rpms && \
+    INSTALL_PKGS="golang openscap-scanner git" && \
+    yum install -y $INSTALL_PKGS && \
+    rpm -V ${INSTALL_PKGS//\*/} && \
+    yum clean all -y && \
+    rm -rf /var/cache/yum
+
+# Build and install latest image inspector
+RUN mkdir -p /go/src/github.com/openshift/image-inspector && \
+    git clone https://github.com/openshift/image-inspector.git /go/src/github.com/openshift/image-inspector && \
+    GOBIN=/usr/bin \
+    GOPATH=/go \
+    CGO_ENABLED=0 \
+    go install -a -installsuffix cgo /go/src/github.com/openshift/image-inspector/cmd/image-inspector.go && \
+    mkdir -p /var/lib/image-inspector
+
+ADD contrib/bin/configure-slave /usr/local/bin/configure-slave
+ADD contrib/bin/cve-scan /usr/local/bin
+
+RUN chown -R 1001:0 $HOME && \
+    chmod -R g+rw $HOME
+
+VOLUME /var/run/docker.sock
+
+# Need to run as root to access the docker socket
+USER 0
