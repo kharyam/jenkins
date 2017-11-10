@@ -5,13 +5,24 @@ This repository contains Dockerfiles for a Jenkins Slave Docker image intended f
 use with [OpenShift v3](https://github.com/openshift/origin). This slave can perform an OpenSCAP CVE scan of an image. See the sections below for details and examples.
 
 ## Configuration
-Perform the following steps on an OpenShift node (as a cluster admin) to build and add this image to the OpenShift registry:
+Perform the following commands on an OpenShift node (as a cluster admin) to build and add this image to the OpenShift registry:
 
-     docker build -t scap-slave:latest -f Dockerfile.rhel7 .
-     docker tag scap-slave:latest \
-        docker-registry.default.svc.cluster.local:5000/openshift/scap-slave:latest
-     docker login -u admin -p $(oc whoami -t) docker-registry.default.svc.cluster.local:5000
-     docker push docker-registry.default.svc.cluster.local:5000/openshift/scap-slave:latest
+1. Build the docker image
+
+       docker build -t scap-slave:latest -f Dockerfile.rhel7 .
+
+2. Tag the image for the internal OpenShift Repository
+
+       docker tag scap-slave:latest \
+         docker-registry.default.svc.cluster.local:5000/openshift/scap-slave:latest
+
+3. Login to the OpenShift repository
+       
+       docker login -u admin -p $(oc whoami -t) docker-registry.default.svc.cluster.local:5000
+
+4. Push the image into the repository
+
+       docker push docker-registry.default.svc.cluster.local:5000/openshift/scap-slave:latest
 
 ## Example Usage
 
@@ -69,7 +80,7 @@ Perform the following steps on an OpenShift node (as a cluster admin) to build a
 
 4. Update the Jenkins *JAVA_OPTS* variable so that the HTML report is displayed properly in Jenkins
 
-       oc set env dc/jenkins \JAVA_OPTS=-Dhudson.model.DirectoryBrowserSupport.CSP=\"\"
+       oc set env dc/jenkins JAVA_OPTS=-Dhudson.model.DirectoryBrowserSupport.CSP=\"\"
 
 5. Visit the jenkins url (*oc get routes*) and click the *scap-test/scap-pipeline* job, select **Build Now**
 
