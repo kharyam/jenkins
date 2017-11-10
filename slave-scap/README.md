@@ -18,7 +18,7 @@ Perform the following commands on an OpenShift node (as a cluster admin) to buil
 
 3. Login to the OpenShift repository
        
-       docker login -u admin -p $(oc whoami -t) docker-registry.default.svc.cluster.local:5000
+       docker login -u $(oc whoami) -p $(oc whoami -t) docker-registry.default.svc.cluster.local:5000
 
 4. Push the image into the repository
 
