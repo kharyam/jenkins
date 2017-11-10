@@ -55,7 +55,7 @@ Perform the following commands on an OpenShift node (as a cluster admin) to buil
                ) {
                  node('scap') {
                    stage('SCAP CVE Scan') {
-                     SCAN_RESULT = sh([returnStatus: true, script: 'cve-scan         registry.access.redhat.com/rhel7:latest'])
+                     SCAN_RESULT = sh([returnStatus: true, script: 'cve-scan registry.access.redhat.com/rhel7:latest'])
                      archiveArtifacts 'results.html'
                      if (SCAN_RESULT != 0) {
                        timeout(time: 7, unit: 'DAYS') {
