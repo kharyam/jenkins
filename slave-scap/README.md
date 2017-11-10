@@ -50,7 +50,7 @@ Perform the following commands on an OpenShift node (as a cluster admin) to buil
                        privileged: true,
                        workingDir: '/tmp/jenkins')],
                    volumes: [
-                       hostPathVolume(hostPath: '/var/run/docker.sock', mountPath:         '/var/run/docker.sock')
+                       hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock')
                    ]
                ) {
                  node('scap') {
