@@ -60,7 +60,7 @@ Perform the following commands on an OpenShift node (as a cluster admin) to buil
                      if (SCAN_RESULT != 0) {
                        timeout(time: 7, unit: 'DAYS') {
                          echo "CVE(s) Detected!"
-                         input message: 'One or more CVEs were detected.', submitter: 'admin,dmin-admin'
+                         input message: 'One or more CVEs were detected.', submitter: 'admin,admin-admin'
                        }
                      } else echo "Passed Scan"
                    }
