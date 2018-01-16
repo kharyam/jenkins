@@ -13,7 +13,9 @@ LABEL com.redhat.component="jenkins-slave-scap-rhel7-docker" \
       io.openshift.tags="openshift,jenkins,slave,scap"
 
 # Install OpenSCAP Utils
-RUN yum repolist && \
+RUN yum-config-manager --disable rhel-7-server-rt-beta-rpms \
+    yum-config-manager --disable rhel-7-server-htb-rpms \
+    yum repolist && \
     yum clean metadata && \
     yum-config-manager --enable rhel-7-server-extras-rpms rhel-7-server-optional-rpms && \
     INSTALL_PKGS="golang openscap-scanner git" && \
